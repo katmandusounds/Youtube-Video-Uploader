@@ -29,7 +29,6 @@ export class GoogleAuthService {
         response_type: 'code',
         access_type: 'offline',
         scope: SCOPES.join(' '),
-        include_granted_scopes: 'false',
         prompt: 'consent'
       });
 
