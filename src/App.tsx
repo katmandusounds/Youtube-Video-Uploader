@@ -1,4 +1,5 @@
 import React from 'react';
+import { DebugEnv } from './components/DebugEnv';
 import { useYouTubeStore } from './store/youtube';
 import { LoginPage } from './components/LoginPage';
 import { UploadPage } from './components/UploadPage';
@@ -12,7 +13,12 @@ export default function App() {
   }
 
   // Show upload page if authenticated
-  return <UploadPage />;
+  return (
+    <>
+      <UploadPage />
+      <DebugEnv />
+    </>
+  );
 }
 
 /// notes 

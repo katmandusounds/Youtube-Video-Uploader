@@ -19,6 +19,10 @@ export class GoogleAuthService {
 
   async signIn(): Promise<void> {
     const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+    if (!clientId) {
+      throw new Error('Google Client ID not configured. Please check your .env file.');
+    }
+
     const redirectUri = window.location.origin;
     
     console.log('Starting OAuth flow with:', {

@@ -10,6 +10,7 @@ console.log('App Version:', import.meta.env.VITE_APP_VERSION || '1.0.0');
 // Verify Google Client ID is available
 if (!import.meta.env.VITE_GOOGLE_CLIENT_ID) {
   console.error('Google Client ID not found in environment variables');
+  console.log('Available env vars:', import.meta.env);
 } else {
   console.log('Google Client ID configured:', import.meta.env.VITE_GOOGLE_CLIENT_ID.substring(0, 10) + '...');
 }
