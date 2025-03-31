@@ -61,4 +61,13 @@ export class GoogleAuthService {
     
     return null;
   }
+
+  async initialize(): Promise<void> {
+    // Check for OAuth redirect response
+    const token = await this.handleRedirect();
+    if (token) {
+      // Clear the URL fragment
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }
 } 
