@@ -2,6 +2,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';
+import { GoogleAuthService } from './services/googleAuth';
 
 // Add a console log to verify the version that's running
 console.log('App Version:', import.meta.env.VITE_APP_VERSION || '1.0.0');
@@ -13,23 +14,14 @@ if (!import.meta.env.VITE_GOOGLE_CLIENT_ID) {
   console.log('Google Client ID configured:', import.meta.env.VITE_GOOGLE_CLIENT_ID.substring(0, 10) + '...');
 }
 
-// Wait for Google client to be available
-const waitForGoogleClient = async (maxAttempts = 10) => {
-  for (let i = 0; i < maxAttempts; i++) {
-    if (window.google?.accounts?.oauth2) {
-      console.log('Google client ready');
-      return;
-    }
-    await new Promise(resolve => setTimeout(resolve, 500));
-    console.log('Waiting for Google client...');
-  }
-  console.error('Google client not available after maximum attempts');
-};
-
-waitForGoogleClient().then(() => {
+// Initialize Google Auth
+GoogleAuthService.getInstance().initialize().then(() => {
+  console.log('Google Auth initialized');
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
       <App />
     </StrictMode>
   );
+}).catch(error => {
+  console.error('Failed to initialize Google Auth:', error);
 });
