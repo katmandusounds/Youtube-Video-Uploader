@@ -10,14 +10,10 @@ export default function App() {
 
   React.useEffect(() => {
     useYouTubeStore.getState().initializeAuth();
-    // Check if we're on the bypass route
-    if (window.location.pathname === '/bypass') {
-      setBypassAuth(true);
-    }
   }, []);
 
   if (!auth.isAuthenticated && !bypassAuth) {
-    return <LoginPage />;
+    return <LoginPage onBypass={() => setBypassAuth(true)} />;
   }
 
   return bypassAuth ? <BypassUploadPage /> : <UploadPage />;

@@ -1,9 +1,12 @@
 import React from 'react';
 import { useYouTubeStore } from '../store/youtube';
 
-export function LoginPage() {
+interface LoginPageProps {
+  onBypass: () => void;
+}
+
+export function LoginPage({ onBypass }: LoginPageProps) {
   const { signIn } = useYouTubeStore();
-  const [bypassAuth, setBypassAuth] = React.useState(false);
 
   return (
     <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center p-4">
@@ -25,10 +28,10 @@ export function LoginPage() {
         </button>
 
         <button
-          onClick={() => window.location.href = '/bypass'}
-          className="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+          onClick={onBypass}
+          className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
         >
-          Test Video Creation (No Upload)
+          Bypass
         </button>
       </div>
     </div>
