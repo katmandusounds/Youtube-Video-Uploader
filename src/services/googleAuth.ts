@@ -20,43 +20,19 @@ export class GoogleAuthService {
   async signIn(): Promise<void> {
     try {
       const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-      console.log('Debug - Environment:', {
-        clientId: clientId ? 'exists' : 'missing',
-        env: import.meta.env,
-        location: window.location.href
-      });
-
-      if (!clientId) {
-        throw new Error('Google Client ID not configured. Please check your .env file.');
-      }
-
-      const redirectUri = window.location.origin;
+      const redirectUri = `${import.meta.env.VITE_API_URL}/auth/google/callback`; // Railway URL
       
-      // Build auth URL
       const authUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth');
       const params = {
         client_id: clientId,
         redirect_uri: redirectUri,
-        response_type: 'token',
+        response_type: 'code',
+        access_type: 'offline',
         scope: SCOPES.join(' '),
-        include_granted_scopes: 'true',
+        include_granted_scopes: 'false',
         prompt: 'consent'
       };
 
-      // Log the full auth configuration
-      console.log('Debug - Auth Configuration:', {
-        params,
-        scopes: SCOPES,
-        finalUrl: authUrl.toString()
-      });
-
-      // Add parameters to URL
-      Object.entries(params).forEach(([key, value]) => {
-        authUrl.searchParams.append(key, value);
-      });
-
-      // Log final URL and redirect
-      console.log('Debug - Redirecting to:', authUrl.toString());
       window.location.href = authUrl.toString();
     } catch (error) {
       console.error('Debug - Sign in error:', error);
