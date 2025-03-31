@@ -22,18 +22,20 @@ export class GoogleAuthService {
       const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
       const redirectUri = `${import.meta.env.VITE_API_URL}/auth/google/callback`;
       
-      const authUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth');
-      const params = new URLSearchParams({
+      const params = {
         client_id: clientId,
         redirect_uri: redirectUri,
         response_type: 'code',
         access_type: 'offline',
         scope: SCOPES.join(' '),
         prompt: 'consent'
-      });
+      };
 
-      // Add parameters to URL properly
-      window.location.href = `${authUrl.toString()}?${params.toString()}`;
+      const queryString = Object.entries(params)
+        .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+        .join('&');
+
+      window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?${queryString}`;
     } catch (error) {
       console.error('Sign in error:', error);
       throw error;
