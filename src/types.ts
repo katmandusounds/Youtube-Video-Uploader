@@ -13,6 +13,14 @@ export interface ProgressState {
   progress: number;
 }
 
+export interface AuthState {
+  isAuthenticated: boolean;
+  accessToken: string | null;
+  channelName: string | null;
+  channelThumbnail: string | null;
+  error: string | null;
+}
+
 export interface YouTubeAuthState {
   isAuthenticated: boolean;
   channelName: string | null;
