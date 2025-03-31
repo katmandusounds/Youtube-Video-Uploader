@@ -16,11 +16,26 @@ const oauth2Client = new google.auth.OAuth2(
   process.env.REDIRECT_URI
 );
 
+// Add health check endpoint
+app.get('/', (req, res) => {
+  res.send('YouTube OAuth Server is running!');
+});
+
 // Handle the OAuth callback
 app.get('/auth/google/callback', async (req, res) => {
   try {
     const { code } = req.query;
+    
+    if (!code) {
+      throw new Error('No code provided');
+    }
+
+    // Exchange code for tokens
     const { tokens } = await oauth2Client.getToken(code as string);
+    console.log('Received tokens:', {
+      access_token: tokens.access_token ? 'present' : 'missing',
+      refresh_token: tokens.refresh_token ? 'present' : 'missing'
+    });
 
     // Store refresh token securely (in a real app, save to database)
     if (tokens.refresh_token) {
@@ -44,11 +59,6 @@ app.post('/auth/google/token', async (req, res) => {
     console.error('Token exchange error:', error);
     res.status(500).json({ error: 'Failed to exchange code for token' });
   }
-});
-
-// Add health check endpoint for Railway
-app.get('/', (req, res) => {
-  res.send('YouTube OAuth Server is running!');
 });
 
 // Update PORT handling for Railway
