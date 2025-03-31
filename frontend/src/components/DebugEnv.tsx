@@ -5,6 +5,7 @@ export function DebugEnv() {
         {JSON.stringify(
           {
             VITE_GOOGLE_CLIENT_ID: import.meta.env.VITE_GOOGLE_CLIENT_ID?.substring(0, 10) + '...',
+            VITE_API_URL: import.meta.env.VITE_API_URL,
             origin: window.location.origin,
           },
           null,
