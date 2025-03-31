@@ -22,6 +22,12 @@ export class GoogleAuthService {
       const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
       const redirectUri = `${import.meta.env.VITE_API_URL}/auth/google/callback`;
       
+      console.log('Auth URL params:', {
+        clientId: clientId.substring(0, 10) + '...',
+        redirectUri,
+        scope: SCOPES.join(' ')
+      });
+      
       const params = {
         client_id: clientId,
         redirect_uri: redirectUri,
@@ -35,7 +41,10 @@ export class GoogleAuthService {
         .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
         .join('&');
 
-      window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?${queryString}`;
+      const finalUrl = `https://accounts.google.com/o/oauth2/v2/auth?${queryString}`;
+      console.log('Final auth URL:', finalUrl);
+
+      window.location.href = finalUrl;
     } catch (error) {
       console.error('Sign in error:', error);
       throw error;
