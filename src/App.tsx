@@ -16,8 +16,8 @@ function LoginPage() {
           <div className="flex flex-col items-center gap-6 text-center">
             <Youtube className="w-16 h-16 text-red-500" />
             <div>
-              <h1 className="text-2xl font-bold mb-2">YouTube Video Uploader</h1>
-              <p className="text-gray-400">Sign in with your Google account to start uploading videos</p>
+              <h1 className="text-2xl font-bold mb-2">TypeBeat 2 YouTube</h1>
+              <p className="text-gray-400">Sign in with your Google account to start uploading videos!!!</p>
             </div>
             <button
               onClick={() => signIn()}
@@ -101,7 +101,7 @@ function UploadPage() {
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-3 mb-8">
             <Youtube className="w-10 h-10 text-red-500" />
-            <h1 className="text-3xl font-bold">YouTube Video Uploader</h1>
+            <h1 className="text-3xl font-bold">TypeBeat 2 YouTube</h1>
           </div>
 
           <div className="mb-8">
