@@ -14,7 +14,7 @@ if (!import.meta.env.VITE_GOOGLE_CLIENT_ID) {
   console.log('Google Client ID configured:', import.meta.env.VITE_GOOGLE_CLIENT_ID.substring(0, 10) + '...');
 }
 
-// Initialize Google Auth
+// Initialize Google Auth and handle redirect
 GoogleAuthService.getInstance().initialize().then(() => {
   console.log('Google Auth initialized');
   createRoot(document.getElementById('root')!).render(

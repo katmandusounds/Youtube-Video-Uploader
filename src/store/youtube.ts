@@ -68,39 +68,13 @@ export const useYouTubeStore = create<YouTubeStore>((set) => ({
   signIn: async () => {
     try {
       const authService = GoogleAuthService.getInstance();
-      const token = await authService.signIn();
-      
-      localStorage.setItem('youtube_access_token', token);
-
-      // Get channel info
-      const response = await fetch('https://www.googleapis.com/youtube/v3/channels?part=snippet&mine=true', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to get channel info');
-      }
-
-      const data = await response.json();
-      const channel = data.items[0];
-
-      set({
-        auth: {
-          isAuthenticated: true,
-          channelName: channel.snippet.title,
-          channelThumbnail: channel.snippet.thumbnails.default.url,
-          email: null,
-          error: null,
-        }
-      });
+      await authService.signIn(); // Note: This will redirect, so no need for further code
     } catch (error) {
       console.error('Sign in failed:', error);
       set(state => ({
         auth: {
           ...state.auth,
-          error: 'Sign in failed',
+          error: error instanceof Error ? error.message : 'Sign in failed',
         }
       }));
     }

@@ -17,55 +17,48 @@ export class GoogleAuthService {
     return this.instance;
   }
 
-  async initialize() {
-    try {
-      console.log('Initializing Google Auth Service...');
-      await this.loadGapiScript();
-      await this.initGapiClient();
-    } catch (error) {
-      console.error('Failed to initialize Google Auth:', error);
-      throw error;
+  async signIn(): Promise<void> {
+    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+    const redirectUri = window.location.origin;
+    
+    console.log('Starting OAuth flow with:', {
+      clientId: clientId.substring(0, 10) + '...',
+      redirectUri,
+      scopes: SCOPES
+    });
+    
+    const authUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth');
+    authUrl.searchParams.append('client_id', clientId);
+    authUrl.searchParams.append('redirect_uri', redirectUri);
+    authUrl.searchParams.append('response_type', 'token');
+    authUrl.searchParams.append('scope', SCOPES.join(' '));
+    authUrl.searchParams.append('include_granted_scopes', 'true');
+    authUrl.searchParams.append('prompt', 'consent');
+
+    console.log('Redirecting to:', authUrl.toString());
+    window.location.href = authUrl.toString();
+  }
+
+  async handleRedirect(): Promise<string | null> {
+    // Handle the OAuth redirect with token in URL fragment
+    const hash = window.location.hash.substring(1);
+    const params = new URLSearchParams(hash);
+    const accessToken = params.get('access_token');
+    
+    if (accessToken) {
+      localStorage.setItem('youtube_access_token', accessToken);
+      return accessToken;
     }
+    
+    return null;
   }
 
-  private loadGapiScript(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const script = document.createElement('script');
-      script.src = 'https://apis.google.com/js/api.js';
-      script.onload = () => resolve();
-      script.onerror = () => reject(new Error('Failed to load GAPI script'));
-      document.body.appendChild(script);
-    });
-  }
-
-  private async initGapiClient(): Promise<void> {
-    if (!window.gapi) throw new Error('GAPI not loaded');
-
-    return new Promise((resolve, reject) => {
-      window.gapi.load('client:auth2', async () => {
-        try {
-          await window.gapi.client.init({
-            clientId: import.meta.env.VITE_GOOGLE_CLIENT_ID,
-            scope: SCOPES.join(' ')
-          });
-          resolve();
-        } catch (error) {
-          reject(error);
-        }
-      });
-    });
-  }
-
-  async signIn(): Promise<string> {
-    try {
-      console.log('Starting sign in process...');
-      const googleAuth = window.gapi.auth2.getAuthInstance();
-      const user = await googleAuth.signIn();
-      const authResponse = user.getAuthResponse();
-      return authResponse.access_token;
-    } catch (error) {
-      console.error('Sign in error:', error);
-      throw error;
+  async initialize(): Promise<void> {
+    // Check for OAuth redirect response
+    const token = await this.handleRedirect();
+    if (token) {
+      // Clear the URL fragment
+      window.history.replaceState({}, document.title, window.location.pathname);
     }
   }
 } 
