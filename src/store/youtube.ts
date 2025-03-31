@@ -67,10 +67,15 @@ export const useYouTubeStore = create<YouTubeStore>((set) => ({
 
   signIn: async () => {
     try {
+      console.log('Debug - Starting sign in process');
       const authService = GoogleAuthService.getInstance();
-      await authService.signIn(); // Note: This will redirect, so no need for further code
+      await authService.signIn();
     } catch (error) {
-      console.error('Sign in failed:', error);
+      console.error('Debug - Sign in failed:', {
+        error,
+        message: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : undefined
+      });
       set(state => ({
         auth: {
           ...state.auth,

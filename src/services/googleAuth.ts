@@ -18,29 +18,50 @@ export class GoogleAuthService {
   }
 
   async signIn(): Promise<void> {
-    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-    if (!clientId) {
-      throw new Error('Google Client ID not configured. Please check your .env file.');
+    try {
+      const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+      console.log('Debug - Environment:', {
+        clientId: clientId ? 'exists' : 'missing',
+        env: import.meta.env,
+        location: window.location.href
+      });
+
+      if (!clientId) {
+        throw new Error('Google Client ID not configured. Please check your .env file.');
+      }
+
+      const redirectUri = window.location.origin;
+      
+      // Build auth URL
+      const authUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth');
+      const params = {
+        client_id: clientId,
+        redirect_uri: redirectUri,
+        response_type: 'token',
+        scope: SCOPES.join(' '),
+        include_granted_scopes: 'true',
+        prompt: 'consent'
+      };
+
+      // Log the full auth configuration
+      console.log('Debug - Auth Configuration:', {
+        params,
+        scopes: SCOPES,
+        finalUrl: authUrl.toString()
+      });
+
+      // Add parameters to URL
+      Object.entries(params).forEach(([key, value]) => {
+        authUrl.searchParams.append(key, value);
+      });
+
+      // Log final URL and redirect
+      console.log('Debug - Redirecting to:', authUrl.toString());
+      window.location.href = authUrl.toString();
+    } catch (error) {
+      console.error('Debug - Sign in error:', error);
+      throw error;
     }
-
-    const redirectUri = window.location.origin;
-    
-    console.log('Starting OAuth flow with:', {
-      clientId: clientId.substring(0, 10) + '...',
-      redirectUri,
-      scopes: SCOPES
-    });
-    
-    const authUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth');
-    authUrl.searchParams.append('client_id', clientId);
-    authUrl.searchParams.append('redirect_uri', redirectUri);
-    authUrl.searchParams.append('response_type', 'token');
-    authUrl.searchParams.append('scope', SCOPES.join(' '));
-    authUrl.searchParams.append('include_granted_scopes', 'true');
-    authUrl.searchParams.append('prompt', 'consent');
-
-    console.log('Redirecting to:', authUrl.toString());
-    window.location.href = authUrl.toString();
   }
 
   async handleRedirect(): Promise<string | null> {
