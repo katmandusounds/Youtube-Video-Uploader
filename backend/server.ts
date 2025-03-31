@@ -2,7 +2,6 @@ import express from 'express';
 import cors from 'cors';
 import { google } from 'googleapis';
 import dotenv from 'dotenv';
-import path from 'path';
 
 dotenv.config();
 

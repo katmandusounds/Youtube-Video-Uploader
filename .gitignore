@@ -1,3 +1,21 @@
+# Dependencies
+node_modules/
+frontend/node_modules/
+backend/node_modules/
+
+# Environment
+.env
+frontend/.env
+backend/.env
+
+# Build
+dist/
+frontend/dist/
+backend/dist/
+
+# Logs
+*.log
+
 # Logs
 logs
 *.log
@@ -7,7 +25,6 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
 dist
 dist-ssr
 *.local
@@ -22,5 +39,3 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-
-.env
